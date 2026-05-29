@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9a86f7d1e31d074d99fb70c1f08933c, type: 3}
+  m_Name: RandomDefenceData
+  m_EditorClassIdentifier: Assembly-CSharp::MiniGames.Main.MiniGameData
+  gameName: RandomDefence
+  thumbnail: {fileID: 0}
+  logo: {fileID: 0}
+  rootPrefab: {fileID: 5439750549265691579, guid: 45ac296dbf494ba49984c0ea5b9b3cbc, type: 3}
+  scenePath: 
