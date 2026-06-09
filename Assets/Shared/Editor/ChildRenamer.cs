@@ -2,29 +2,18 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
-/// <summary>
-/// 선택한 오브젝트의 직계 자식들을 순번(01~99)으로 일괄 이름변경하는 에디터 유틸.
-///
-/// 실행 방법
-///   · 상단 메뉴  : Tools → Child Renamer
-///   · 우클릭     : GameObject → Child Renamer
-/// </summary>
 public class ChildRenamer : EditorWindow
 {
-    // ── 설정 ──────────────────────────────────────────────────────────────
     private string _baseName    = "";
     private string _separator   = "_";
     private int    _startFrom   = 1;
-    private int    _formatIndex = 0;   // 0=D2(01)  1=D3(001)  2=없음(1)
+    private int    _formatIndex = 0;
 
     private static readonly string[] _formatLabels  = { "01 (두 자리)", "001 (세 자리)", "1 (자릿수 없음)" };
     private static readonly string[] _formatStrings = { "D2", "D3", "" };
 
-    // ── 상태 ──────────────────────────────────────────────────────────────
     private GameObject _target;
     private Vector2    _scrollPos;
-
-    // ── 메뉴 진입점 ───────────────────────────────────────────────────────
 
     [MenuItem("Tools/Child Renamer")]
     private static void OpenFromMenu() => Open();
@@ -44,8 +33,6 @@ public class ChildRenamer : EditorWindow
         win.RefreshTarget();
     }
 
-    // ── Unity 콜백 ────────────────────────────────────────────────────────
-
     private void OnEnable()        => RefreshTarget();
     private void OnSelectionChange() => RefreshTarget();
 
@@ -57,13 +44,10 @@ public class ChildRenamer : EditorWindow
         Repaint();
     }
 
-    // ── GUI ───────────────────────────────────────────────────────────────
-
     private void OnGUI()
     {
         EditorGUILayout.Space(8);
 
-        // ── 대상 ─────────────────────────────────────────────────────────
         DrawHeader("대상 오브젝트");
 
         if (_target == null)
@@ -85,7 +69,6 @@ public class ChildRenamer : EditorWindow
         EditorGUILayout.LabelField($"직계 자식 수 : {childCount} 개", EditorStyles.miniLabel);
         EditorGUILayout.Space(8);
 
-        // ── 설정 ─────────────────────────────────────────────────────────
         DrawHeader("설정");
         _baseName    = EditorGUILayout.TextField("기본 이름",  _baseName);
         _separator   = EditorGUILayout.TextField("구분자",     _separator);
@@ -95,7 +78,6 @@ public class ChildRenamer : EditorWindow
 
         EditorGUILayout.Space(8);
 
-        // ── 미리보기 ──────────────────────────────────────────────────────
         DrawHeader("미리보기");
 
         int previewCount = Mathf.Min(childCount, 6);
@@ -117,7 +99,6 @@ public class ChildRenamer : EditorWindow
         EditorGUILayout.EndScrollView();
         EditorGUILayout.Space(8);
 
-        // ── 적용 ─────────────────────────────────────────────────────────
         bool valid = !string.IsNullOrEmpty(_baseName) || _formatIndex >= 0;
         using (new EditorGUI.DisabledScope(!valid))
         {
@@ -130,8 +111,6 @@ public class ChildRenamer : EditorWindow
 
         EditorGUILayout.Space(4);
     }
-
-    // ── 로직 ──────────────────────────────────────────────────────────────
 
     private void Apply()
     {
@@ -166,9 +145,6 @@ public class ChildRenamer : EditorWindow
             : $"{_baseName}{_separator}{numStr}";
     }
 
-    // ── 헬퍼 ──────────────────────────────────────────────────────────────
-
-    /// <summary>이름 끝의 숫자·구분자를 제거한다. "Waypoint_01" → "Waypoint"</summary>
     private static string StripTrailingNumbers(string name) =>
         Regex.Replace(name, @"[\s_\-]?\d+$", "").Trim();
 

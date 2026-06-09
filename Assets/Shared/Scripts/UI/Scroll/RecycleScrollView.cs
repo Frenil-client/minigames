@@ -7,29 +7,10 @@ namespace Shared.UI
 {
     public enum ScrollMode
     {
-        /// <summary>유한 리스트. 뷰포트 밖 슬롯을 풀링하여 재사용.</summary>
         Recycle,
-        /// <summary>무한 루프. 마지막 슬롯 다음에 첫 슬롯이 이어짐.</summary>
         Loop,
     }
 
-    /// <summary>
-    /// 플래그 하나로 재사용(Recycle) / 루프(Loop) 를 전환하는 수평 스크롤 뷰.
-    ///
-    /// ■ Recycle 모드
-    ///   · 슬롯 전체 폭 ≤ 뷰포트 폭  →  중앙 정렬, 스크롤 비활성
-    ///   · 슬롯 전체 폭 >  뷰포트 폭  →  좌→우 정렬, 스크롤 활성
-    ///
-    /// ■ Loop 모드
-    ///   · 데이터 3벌 복제 콘텐츠, 가운데에서 시작
-    ///   · 양 끝 도달 시 무음 텔레포트 → 무한 루프
-    ///
-    /// ■ 슬롯 크기 : 프리팹 RectTransform.sizeDelta 에서 자동 읽음
-    ///
-    /// ■ 사용 예
-    ///   scrollView.onSlotClicked = data => { };
-    ///   scrollView.Initialize(dataList);
-    /// </summary>
     [RequireComponent(typeof(ScrollRect))]
     public class RecycleScrollView : MonoBehaviour
     {
@@ -43,11 +24,7 @@ namespace Shared.UI
         [SerializeField] private float slotSpacing = 44f;
         [SerializeField] private float sidePadding = 44f;
 
-        // ── Public ────────────────────────────────────────────────────────
-
         public Action<IScrollSlotData> onSlotClicked;
-
-        // ── Private ───────────────────────────────────────────────────────
 
         private ScrollRect    _scroll;
         private RectTransform _viewport;
@@ -67,8 +44,6 @@ namespace Shared.UI
         private float _loopOneWidth;
 
         private float Step => _slotWidth + slotSpacing;
-
-        // ── Public Methods ─────────────────────────────────────────────────
 
         public void Initialize(IList<IScrollSlotData> data)
         {
@@ -90,16 +65,12 @@ namespace Shared.UI
             });
         }
 
-        // ── Prefab Size ───────────────────────────────────────────────────
-
         private void ReadSlotSizeFromPrefab()
         {
             var rt   = slotPrefab.GetComponent<RectTransform>();
             _slotWidth  = rt.sizeDelta.x;
             _slotHeight = rt.sizeDelta.y;
         }
-
-        // ── Layout ────────────────────────────────────────────────────────
 
         private void SetupLayout()
         {
@@ -140,8 +111,6 @@ namespace Shared.UI
             _content.anchoredPosition = new Vector2(-_loopOneWidth, _content.anchoredPosition.y);
         }
 
-        // ── Loop Wrap ─────────────────────────────────────────────────────
-
         private void HandleLoopWrap()
         {
             if (_data.Count == 0) return;
@@ -172,8 +141,6 @@ namespace Shared.UI
             if (_firstV != int.MinValue) _firstV += delta;
             if (_lastV  != int.MinValue) _lastV  += delta;
         }
-
-        // ── Recycle Logic ─────────────────────────────────────────────────
 
         private void RefreshSlots()
         {
@@ -207,8 +174,6 @@ namespace Shared.UI
             _lastV  = nl;
         }
 
-        // ── Slot Lifecycle ────────────────────────────────────────────────
-
         private void SpawnSlot(int vi)
         {
             if (_active.ContainsKey(vi)) return;
@@ -239,8 +204,6 @@ namespace Shared.UI
 
         private ScrollSlotView GetFromPool() =>
             _pool.Count > 0 ? _pool.Dequeue() : Instantiate(slotPrefab, _content);
-
-        // ── Helpers ───────────────────────────────────────────────────────
 
         private float ScrolledX()          => -_content.anchoredPosition.x;
         private float GetSlotX(int vi)     => _startX + vi * Step;

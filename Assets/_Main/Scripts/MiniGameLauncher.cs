@@ -1,72 +1,119 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace MiniGames.Main
 {
-    /// <summary>
-    /// 미니게임 로드 / 언로드 담당.
-    /// MainScene 에 상주하며 MainSceneController 로부터 호출된다.
-    /// </summary>
     public class MiniGameLauncher : MonoBehaviour
     {
-        private GameObject _currentInstance;
-        private string     _currentScenePath;
+        [SerializeField] private SceneTransitionManager transitionManager;
 
-        // ── Public ────────────────────────────────────────────────────────
+        private GameObject   _currentInstance;
+        private IMiniGame    _currentMiniGame;
+        private MiniGameData _lastData;
+
+        public bool isGameRunning =>
+            _currentInstance != null ||
+            (transitionManager != null && !string.IsNullOrEmpty(transitionManager.activeGameScene));
+
+        public Action               onGameLoading;
+        public Action<MiniGameData> onGameLaunched;
+        public Action               onGameExited;
 
         public void Launch(MiniGameData data)
         {
-            Exit();
+            _lastData = data;
 
             if (data.rootPrefab != null)
-                LaunchPrefab(data.rootPrefab);
-            else if (!string.IsNullOrEmpty(data.scenePath))
-                LaunchScene(data.scenePath);
+            {
+                ExitImmediate();
+                onGameLoading?.Invoke();
+                LaunchPrefab(data);
+            }
+            else if (data.sceneReference != null && data.sceneReference.isValid)
+            {
+                _currentMiniGame?.OnMiniGameExit();
+                _currentMiniGame = null;
+                Time.timeScale = 1f;
+
+                onGameLoading?.Invoke();
+                transitionManager.LoadGame(data.sceneReference.path, () => OnGameSceneLoaded(data));
+            }
             else
-                Debug.LogWarning($"[Launcher] '{data.gameName}' 에 rootPrefab 또는 scenePath 가 없습니다.");
+            {
+                Debug.LogWarning($"[Launcher] '{data.gameName}' 에 rootPrefab 또는 sceneReference 가 없습니다.");
+            }
+        }
+
+        public void Relaunch()
+        {
+            if (_lastData != null) Launch(_lastData);
         }
 
         public void Exit()
         {
             if (_currentInstance != null)
             {
-                _currentInstance.GetComponent<IMiniGame>()?.OnMiniGameExit();
-                Destroy(_currentInstance);
-                _currentInstance = null;
-                Time.timeScale = 1f;
+                ExitImmediate();
+                return;
             }
 
-            if (!string.IsNullOrEmpty(_currentScenePath))
+            if (transitionManager != null && !string.IsNullOrEmpty(transitionManager.activeGameScene))
             {
-                SceneManager.UnloadSceneAsync(_currentScenePath);
-                _currentScenePath = null;
+                _currentMiniGame?.OnMiniGameExit();
+                _currentMiniGame = null;
                 Time.timeScale = 1f;
-            }
-        }
 
-        // ── Private ───────────────────────────────────────────────────────
-
-        private void LaunchPrefab(GameObject prefab)
-        {
-            _currentInstance = Instantiate(prefab);
-            _currentInstance.GetComponent<IMiniGame>()?.OnMiniGameStart();
-        }
-
-        private void LaunchScene(string scenePath)
-        {
-            _currentScenePath = scenePath;
-            SceneManager.LoadSceneAsync(scenePath, LoadSceneMode.Additive).completed += _ =>
-            {
-                Scene scene = SceneManager.GetSceneByPath(scenePath);
-                foreach (GameObject root in scene.GetRootGameObjects())
+                transitionManager.UnloadGame(() =>
                 {
-                    if (root.TryGetComponent<IMiniGame>(out IMiniGame game))
-                    {
-                        game.OnMiniGameStart();
-                        break;
-                    }
+                    onGameExited?.Invoke();
+                });
+                return;
+            }
+
+            if (_currentMiniGame != null)
+            {
+                Debug.LogWarning("[MiniGameLauncher] activeGameScene 추적 없이 Exit 호출. 폴백으로 처리합니다.");
+                _currentMiniGame.OnMiniGameExit();
+                _currentMiniGame = null;
+                Time.timeScale = 1f;
+                onGameExited?.Invoke();
+            }
+        }
+
+        private void ExitImmediate()
+        {
+            if (_currentInstance == null) return;
+
+            _currentMiniGame?.OnMiniGameExit();
+            Destroy(_currentInstance);
+            _currentInstance = null;
+            _currentMiniGame = null;
+            Time.timeScale = 1f;
+            onGameExited?.Invoke();
+        }
+
+        private void LaunchPrefab(MiniGameData data)
+        {
+            _currentInstance = Instantiate(data.rootPrefab);
+            _currentMiniGame = _currentInstance.GetComponent<IMiniGame>();
+            _currentMiniGame?.OnMiniGameStart();
+            onGameLaunched?.Invoke(data);
+        }
+
+        private void OnGameSceneLoaded(MiniGameData data)
+        {
+            Scene scene = SceneManager.GetSceneByPath(data.sceneReference.path);
+            foreach (GameObject root in scene.GetRootGameObjects())
+            {
+                if (root.TryGetComponent<IMiniGame>(out IMiniGame game))
+                {
+                    _currentMiniGame = game;
+                    game.OnMiniGameStart();
+                    break;
                 }
-            };
+            }
+            onGameLaunched?.Invoke(data);
         }
     }
 }

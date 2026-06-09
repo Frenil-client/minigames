@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 993e280fdb980da4fb99ff1654e31b0d, type: 3}
+  m_Name: RD_MonsterData_Normal
+  m_EditorClassIdentifier: Assembly-CSharp::MiniGames.RandomDefence.RD_MonsterDataSO
+  monsterId: Normal
+  sprite: {fileID: 0}
+  hp: 5
+  defense: 0
+  moveSpeed: 1
+  rewardCurrency: 5
+  scoreValue: 10
+  prefab: {fileID: 7156430354973704471, guid: 5a0bb2b526cf081499e2bcf43ff50890, type: 3}

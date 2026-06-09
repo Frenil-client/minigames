@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 596216eba5fa7304f8781245275a500e, type: 3}
+  m_Name: RD_TowerData_Mage
+  m_EditorClassIdentifier: Assembly-CSharp::MiniGames.RandomDefence.RD_TowerDataSO
+  type: 1
+  gradeSprites:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  attackDamageByGrade:
+  - 4
+  - 9
+  - 16
+  - 28
+  - 56
+  - 100
+  baseAttackDamage: 0
+  attackDamagePerGrade: 0
+  baseAttackSpeed: 0.6
+  attackSpeedPerGrade: 0
+  attackRange: 2.5
+  attackType: 1
+  aoeRadius: 1
+  ccType: 2
+  ccMinGrade: 4
+  baseCCProbability: 0.2
+  ccProbabilityPerGrade: 0.1
+  ccDuration: 2
+  baseSellPrice: 15
+  sellPricePerGrade: 15
