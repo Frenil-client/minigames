@@ -42,15 +42,18 @@ namespace MiniGames.RandomDefence
 
         public void SellTower(RD_TowerBase tower)
         {
+            if (tower == null) return;
+
             foreach (var slot in slots)
             {
                 if (slot.placedTower != tower) continue;
-                int price = tower.sellPrice;
                 slot.Remove();
-                Destroy(tower.gameObject);
-                RD_GameManager.instance?.economyMgr?.AddCurrency(price);
-                return;
+                break;
             }
+
+            int price = tower.sellPrice;
+            Destroy(tower.gameObject);
+            RD_GameManager.instance?.economyMgr?.AddCurrency(price);
         }
 
         public bool TryMerge(RD_TowerBase towerA, RD_TowerBase towerB)

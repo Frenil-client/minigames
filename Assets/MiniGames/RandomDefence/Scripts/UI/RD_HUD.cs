@@ -6,6 +6,8 @@ namespace MiniGames.RandomDefence
 {
     public class RD_HUD : MonoBehaviour
     {
+        public static RD_HUD instance { get; private set; }
+
         [Header("상단 바")]
         [SerializeField] private TextMeshProUGUI timerText;
         [SerializeField] private TextMeshProUGUI livesText;
@@ -26,7 +28,28 @@ namespace MiniGames.RandomDefence
         [Header("하단 바")]
         [SerializeField] private Button          pullButton;
         [SerializeField] private TextMeshProUGUI sellPriceText;
+        [SerializeField] private Button          sellButton;
 
+        [Header("드래그 중 숨길 UI")]
+        [SerializeField] private GameObject[] hideWhileDragging;
+
+        [Header("드래그 중 캔버스 소팅 (Characters 레이어 기준)")]
+        [Tooltip("드래그 중인 타워(order 100)보다 낮아야 타워가 UI 위에 보입니다.")]
+        [SerializeField] private int dragSortingOrder = 60;
+
+        private RD_TowerBase _sellTarget;
+        private Canvas       _canvas;
+
+        private void Awake()
+        {
+            instance = this;
+            _canvas  = GetComponent<Canvas>();
+        }
+
+        private void OnDestroy()
+        {
+            if (instance == this) instance = null;
+        }
 
         private void Start()
         {
@@ -67,10 +90,12 @@ namespace MiniGames.RandomDefence
             if (speedButton    != null) speedButton.onClick.AddListener(OnSpeed);
             if (pauseButton    != null) pauseButton.onClick.AddListener(OnPause);
             if (skipWaveButton != null) skipWaveButton.onClick.AddListener(OnSkipWave);
+            if (sellButton     != null) sellButton.onClick.AddListener(OnSell);
 
             if (skipWaveRoot  != null) skipWaveRoot.SetActive(false);
             if (speedText     != null) speedText.text = "1x";
             if (sellPriceText != null) sellPriceText.gameObject.SetActive(false);
+            if (sellButton    != null) sellButton.gameObject.SetActive(false);
         }
 
         private void OnWaveTimerTick(float t)
@@ -100,16 +125,63 @@ namespace MiniGames.RandomDefence
 
         private void OnSkipWave() => RD_GameManager.instance.roundMgr.StartWaveManually();
 
-        public void ShowSellPrice(int price)
+        public void ShowSellPrice(RD_TowerBase tower)
         {
-            if (sellPriceText == null) return;
-            sellPriceText.gameObject.SetActive(true);
-            sellPriceText.text = $"판매가: {price}";
+            if (tower == null) return;
+            _sellTarget = tower;
+
+            if (sellPriceText != null)
+            {
+                sellPriceText.gameObject.SetActive(true);
+                sellPriceText.text = $"판매가: {tower.sellPrice}";
+            }
+            if (sellButton != null) sellButton.gameObject.SetActive(true);
         }
 
         public void HideSellPrice()
         {
+            _sellTarget = null;
             if (sellPriceText != null) sellPriceText.gameObject.SetActive(false);
+            if (sellButton    != null) sellButton.gameObject.SetActive(false);
+        }
+
+        public void SetDragMode(bool dragging)
+        {
+            if (hideWhileDragging != null)
+            {
+                foreach (var go in hideWhileDragging)
+                    if (go != null) go.SetActive(!dragging);
+            }
+
+            if (_canvas == null) return;
+
+            if (dragging)
+            {
+                var cam = RD_GameManager.instance?.cam;
+                if (cam == null) return;
+
+                _canvas.renderMode       = RenderMode.ScreenSpaceCamera;
+                _canvas.worldCamera      = cam;
+                _canvas.planeDistance    = 100f;
+                _canvas.sortingLayerName = "Character";
+                _canvas.sortingOrder     = dragSortingOrder;
+            }
+            else
+            {
+                _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            }
+        }
+
+        private void OnSell()
+        {
+            if (_sellTarget == null) return;
+
+            RD_GameManager.instance?.towerMgr?.SellTower(_sellTarget);
+
+            RD_TowerInfoPanel.Hide();
+            RD_RangeIndicator.Hide();
+            RD_TowerDragHandler.ClearSelection();
+            HideSellPrice();
         }
 
         private void ShowToast(string msg) => Debug.Log($"[Toast] {msg}");

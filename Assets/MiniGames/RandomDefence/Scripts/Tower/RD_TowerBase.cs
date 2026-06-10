@@ -6,7 +6,7 @@ namespace MiniGames.RandomDefence
     [RequireComponent(typeof(RD_TowerAttack))]
     public class RD_TowerBase : MonoBehaviour
     {
-        private const string SortingLayerCharacters = "Characters";
+        private const string SortingLayerCharacters = "Character";
 
         public RD_TowerDataSO data  { get; private set; }
         public TowerType      type  => data.type;

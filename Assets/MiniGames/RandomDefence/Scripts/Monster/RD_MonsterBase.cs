@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MiniGames.RandomDefence
@@ -7,6 +8,7 @@ namespace MiniGames.RandomDefence
     {
         public RD_MonsterDataSO data      { get; private set; }
         public float            currentHp { get; private set; }
+        public float            maxHp     { get; private set; }
         public bool             isDead    { get; private set; }
 
         private float     _stunTimer;
@@ -17,12 +19,13 @@ namespace MiniGames.RandomDefence
         public bool  isStunned      => _stunTimer > 0f;
         public float speedMultiplier => isStunned ? 0f : _slowMultiplier;
 
-        private const string SortingLayerCharacters = "Characters";
+        private const string SortingLayerCharacters = "Character";
 
         private RD_PathManager   _path;
         private int              _waypointIndex;
         private Animator         _animator;
         private SpriteRenderer[] _renderers;
+        private RD_MonsterHpBar  _hpBar;
 
         private MaterialPropertyBlock _mpb;
         private static readonly int FlashAmountId = Shader.PropertyToID("_HitFlashAmount");
@@ -31,12 +34,18 @@ namespace MiniGames.RandomDefence
 
         private void Awake()
         {
-            _animator  = GetComponentInChildren<Animator>();
-            _renderers = GetComponentsInChildren<SpriteRenderer>();
-            _mpb       = new MaterialPropertyBlock();
+            _animator = GetComponentInChildren<Animator>();
+            _hpBar    = GetComponent<RD_MonsterHpBar>();
+            _mpb      = new MaterialPropertyBlock();
 
-            foreach (var sr in _renderers)
+            var renderers = new List<SpriteRenderer>();
+            foreach (var sr in GetComponentsInChildren<SpriteRenderer>())
+            {
+                if (_hpBar != null && _hpBar.Owns(sr.transform)) continue;
                 sr.sortingLayerName = SortingLayerCharacters;
+                renderers.Add(sr);
+            }
+            _renderers = renderers.ToArray();
         }
 
         private void Update()
@@ -49,7 +58,8 @@ namespace MiniGames.RandomDefence
         public void Initialize(RD_MonsterDataSO d, RD_PathManager path, float hpBonus = 0f)
         {
             data            = d;
-            currentHp       = d.hp + hpBonus;
+            maxHp           = d.hp + hpBonus;
+            currentHp       = maxHp;
             isDead          = false;
             _path           = path;
             _waypointIndex  = 0;
@@ -58,6 +68,8 @@ namespace MiniGames.RandomDefence
             _slowMultiplier = 1f;
 
             if (path != null) transform.position = path.spawnPosition;
+
+            if (_hpBar != null) _hpBar.SetRatio(1f);
         }
 
         public void TakeDamage(float damage, bool armorBreak = false)
@@ -66,6 +78,8 @@ namespace MiniGames.RandomDefence
             float def    = armorBreak ? 0f : data.defense;
             float actual = Mathf.Max(damage - def, 1f);
             currentHp -= actual;
+
+            if (_hpBar != null) _hpBar.SetRatio(maxHp > 0f ? currentHp / maxHp : 0f);
 
             RD_DamageTextSpawner.Show(actual, transform.position + Vector3.up * 0.3f, armorBreak);
 
@@ -143,6 +157,7 @@ namespace MiniGames.RandomDefence
 
             if (_hitFlash != null) { StopCoroutine(_hitFlash); _hitFlash = null; }
             SetFlashAmount(0f);
+            if (_hpBar != null) _hpBar.Hide();
 
             RD_GameManager.instance?.economyMgr?.AddCurrency(data.rewardCurrency);
             RD_GameManager.instance?.scoreMgr?.AddScore(data.scoreValue);

@@ -53,6 +53,8 @@ namespace MiniGames.RandomDefence
             Vector3 worldPos = PointerToWorld();
             bool isOverMe = _collider != null && _collider.OverlapPoint(worldPos);
 
+            if (IsPointerOverUI()) return;
+
             if (isOverMe && !s_anyDragging)
             {
                 var gm = RD_GameManager.instance;
@@ -72,7 +74,6 @@ namespace MiniGames.RandomDefence
         {
             if (IsPointerUp())
             {
-                HideInfo();
                 _state = PointerState.None;
                 return;
             }
@@ -91,6 +92,7 @@ namespace MiniGames.RandomDefence
             transform.position = PointerToWorld() + _dragOffset;
             RD_RangeIndicator.ShowAt(transform.position, _towerBase.attackRange);
             RD_TowerInfoPanel.Track(_towerBase);
+            RD_SellZone.UpdateHover(transform.position);
             if (IsPointerUp())
                 EndDrag();
         }
@@ -100,6 +102,7 @@ namespace MiniGames.RandomDefence
             s_selectedHandler = this;
             RD_RangeIndicator.ShowAt(transform.position, _towerBase.attackRange);
             RD_TowerInfoPanel.Show(_towerBase);
+            RD_HUD.instance?.ShowSellPrice(_towerBase);
         }
 
         private void HideInfo()
@@ -107,6 +110,23 @@ namespace MiniGames.RandomDefence
             if (s_selectedHandler == this) s_selectedHandler = null;
             RD_RangeIndicator.Hide();
             RD_TowerInfoPanel.Hide();
+            RD_HUD.instance?.HideSellPrice();
+        }
+
+        public static void ClearSelection()
+        {
+            s_selectedHandler = null;
+        }
+
+        private void OnDestroy()
+        {
+            if (s_selectedHandler == this) s_selectedHandler = null;
+        }
+
+        private static bool IsPointerOverUI()
+        {
+            var es = UnityEngine.EventSystems.EventSystem.current;
+            return es != null && es.IsPointerOverGameObject();
         }
 
         private void CancelPress()
@@ -126,6 +146,9 @@ namespace MiniGames.RandomDefence
 
             RD_GameManager.instance?.timeMgr?.SetDragOverride(true);
             SetSortingOrder(100);
+
+            RD_SellZone.Show(_towerBase);
+            RD_HUD.instance?.SetDragMode(true);
             return true;
         }
 
@@ -136,6 +159,17 @@ namespace MiniGames.RandomDefence
             SetSortingOrder(0);
 
             RD_GameManager.instance?.timeMgr?.SetDragOverride(false);
+
+            bool inSellZone = RD_SellZone.Contains(transform.position);
+            RD_SellZone.Hide();
+            RD_HUD.instance?.SetDragMode(false);
+
+            if (inSellZone)
+            {
+                HideInfo();
+                RD_GameManager.instance?.towerMgr?.SellTower(_towerBase);
+                return;
+            }
 
             Collider2D[] hits = Physics2D.OverlapPointAll(transform.position);
 
