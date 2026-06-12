@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9a86f7d1e31d074d99fb70c1f08933c, type: 3}
+  m_Name: TimerMatchData
+  m_EditorClassIdentifier: Assembly-CSharp::MiniGames.Main.MiniGameData
+  gameName: TimerMatch
+  thumbnail: {fileID: 21300000, guid: 6561fa30fd92dd0469e14bc634abbe40, type: 3}
+  mainBackground: {fileID: 2800000, guid: 0272578f9962b2b47b23e8caacd28f2d, type: 3}
+  sceneReference:
+    sceneAsset: {fileID: 102900000, guid: 87013950628e8dc4d9138a2717df00d2, type: 3}
+    scenePath: Assets/Scenes/TimerMatch.unity
+  stageCount: 4
+  stageUnlockPrefsKey: TM_UnlockedStage

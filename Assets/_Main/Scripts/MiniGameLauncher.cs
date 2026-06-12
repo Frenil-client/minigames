@@ -12,6 +12,8 @@ namespace MiniGames.Main
         private IMiniGame    _currentMiniGame;
         private MiniGameData _lastData;
 
+        public MiniGameData lastData => _lastData;
+
         public bool isGameRunning =>
             _currentInstance != null ||
             (transitionManager != null && !string.IsNullOrEmpty(transitionManager.activeGameScene));
@@ -20,17 +22,21 @@ namespace MiniGames.Main
         public Action<MiniGameData> onGameLaunched;
         public Action               onGameExited;
 
+        private void Awake()
+        {
+            MiniGameSession.onExitRequested += Exit;
+        }
+
+        private void OnDestroy()
+        {
+            MiniGameSession.onExitRequested -= Exit;
+        }
+
         public void Launch(MiniGameData data)
         {
             _lastData = data;
 
-            if (data.rootPrefab != null)
-            {
-                ExitImmediate();
-                onGameLoading?.Invoke();
-                LaunchPrefab(data);
-            }
-            else if (data.sceneReference != null && data.sceneReference.isValid)
+            if (data.sceneReference != null && data.sceneReference.isValid)
             {
                 _currentMiniGame?.OnMiniGameExit();
                 _currentMiniGame = null;
@@ -93,13 +99,6 @@ namespace MiniGames.Main
             onGameExited?.Invoke();
         }
 
-        private void LaunchPrefab(MiniGameData data)
-        {
-            _currentInstance = Instantiate(data.rootPrefab);
-            _currentMiniGame = _currentInstance.GetComponent<IMiniGame>();
-            _currentMiniGame?.OnMiniGameStart();
-            onGameLaunched?.Invoke(data);
-        }
 
         private void OnGameSceneLoaded(MiniGameData data)
         {

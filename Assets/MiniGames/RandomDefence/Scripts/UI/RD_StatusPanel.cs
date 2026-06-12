@@ -102,16 +102,10 @@ namespace MiniGames.RandomDefence
 
         private void OnExit()
         {
-            var launcher = FindObjectOfType<Main.MiniGameLauncher>(true);
-            if (launcher != null)
-            {
-                launcher.Exit();
-            }
-            else
-            {
-                RD_GameManager.instance?.StopGame();
-                Time.timeScale = 1f;
-            }
+            if (MiniGameSession.RequestExit()) return;
+
+            RD_GameManager.instance?.StopGame();
+            Time.timeScale = 1f;
         }
     }
 }

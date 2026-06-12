@@ -52,6 +52,12 @@ namespace MiniGames.Main
             uiStack.SetRoot(gameSelectPanel);
             if (mainCanvasRoot != null)
                 mainCanvasRoot.SetActive(true);
+
+            if (launcher.lastData != null && gameDetailPanel != null)
+            {
+                gameDetailPanel.Populate(launcher.lastData);
+                uiStack.Push(gameDetailPanel.gameObject);
+            }
         }
 
         private void OnSlotClicked(IScrollSlotData data)
