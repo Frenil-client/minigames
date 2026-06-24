@@ -10,6 +10,20 @@
 
 ---
 
+## 🎮 데모
+
+| 데모 | 보여주는 것 | 미리보기 |
+|---|---|---|
+| **허브 → 게임 진입** ★ | 목록 스크롤(Recycle) · 상세 페이지 데이터 바인딩 · Additive 씬 로드 · 뒤로 가기 | ![Hub](Docs/gifs/Hub.gif) |
+| **RandomDefence** ★ | 가챠 뽑기 → 동일 타입·학년 머지 → 웨이브 방어 핵심 루프 | ![RandomDefence](Docs/gifs/RandomDefence.gif) |
+| **RandomDefence — 드래그&드롭** | 슬롯 이동/머지/판매 존 드롭. 드래그 중 캐릭터만 UI 위로 렌더(캔버스 런타임 전환) | ![RandomDefence Drag](Docs/gifs/RandomDefence_Drag.gif) |
+| **TimerMatch** ★ | 목표 시점에 정지 → 오차 판정 · 계단식 점수 · (고난이도) 타이머 숨김 | ![TimerMatch](Docs/gifs/TimerMatch.gif) |
+
+> ★ = 필수 컷. GIF 파일은 위 경로(`Docs/gifs/`)에 동일한 이름으로 넣으면 자동 표시됩니다.
+> 녹화 방법·컷 구성·권장 설정은 [`Docs/gifs/CAPTURE_GUIDE.md`](Docs/gifs/CAPTURE_GUIDE.md) 참고.
+
+---
+
 ## 프로젝트 포지션
 
 [기존 포트폴리오](https://github.com/Frenil-client/frenil-portfolio)가 **재사용 가능한 시스템 단위**(에디터 툴 · 스탯 · 레드닷 · MVVM)를 다룬다면,
@@ -144,7 +158,7 @@ Assets/
 | 저장소 | 이 프로젝트와의 관계 |
 |--------|---------------------|
 | [frenil-portfolio](https://github.com/Frenil-client/frenil-portfolio) | 포트폴리오 허브 — 경력 및 시스템 프로젝트 개요 |
-| unity-mvvm | 본 프로젝트의 이벤트 드리븐 UI 분리 원칙의 프레임워크화 버전 |
-| unity-stat-system | 데이터 외부화(SO)·무결성 검증 설계의 시스템 단위 사례 |
-| unity-reddot-system | UI 상태 전파 구조 설계 사례 |
-| unity-maplightdata-tool | 에디터 자동화·렌더링 파이프라인 툴링 사례 |
+| [unity-mvvm](https://github.com/Frenil-client/unity-mvvm) | 본 프로젝트의 이벤트 드리븐 UI 분리 원칙의 프레임워크화 버전 |
+| [unity-stat-system](https://github.com/Frenil-client/unity-stat-system) | 데이터 외부화(SO)·무결성 검증 설계의 시스템 단위 사례 |
+| [unity-reddot-system](https://github.com/Frenil-client/unity-reddot-system) | UI 상태 전파 구조 설계 사례 |
+| [unity-maplightdata-tool](https://github.com/Frenil-client/unity-maplightdata-tool) | 에디터 자동화·렌더링 파이프라인 툴링 사례 |
