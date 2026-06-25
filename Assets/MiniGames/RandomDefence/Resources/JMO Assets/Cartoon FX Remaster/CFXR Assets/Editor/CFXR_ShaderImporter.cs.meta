@@ -1,8 +1,11 @@
 fileFormatVersion: 2
-guid: 6cd2d08f4a4d93542aa0004bdac91566
-NativeFormatImporter:
+guid: fe56ec25963759b49955809beeb4324b
+MonoImporter:
   externalObjects: {}
-  mainObjectFileID: 2100000
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
@@ -11,6 +14,5 @@ AssetOrigin:
   productId: 109565
   packageName: Cartoon FX Remaster Free
   packageVersion: R 1.5.0
-  assetPath: Assets/MiniGames/RandomDefence/Resources/Materials/cfxr ember blur hdr
-    ab.mat
+  assetPath: Assets/JMO Assets/Cartoon FX Remaster/CFXR Assets/Editor/CFXR_ShaderImporter.cs
   uploadId: 836238
