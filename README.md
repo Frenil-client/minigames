@@ -3,7 +3,7 @@
 > 하나의 베이스 씬 위에서 미니게임을 동적으로 로드/언로드하는 **확장형 미니게임 플랫폼**입니다.
 > 플랫폼(허브)과 콘텐츠(미니게임)를 구조적으로 분리해, 새 게임을 "폴더 하나 + 데이터 에셋 하나"로 추가할 수 있도록 설계했습니다.
 
-**정휘현** · Unity 클라이언트 프로그래머 (7년차) · silsen@naver.com
+**정휘현** · Unity 클라이언트 프로그래머 (6년 8개월) · silsen@naver.com
 📂 시스템/툴 포트폴리오: [frenil-portfolio](https://github.com/Frenil-client/frenil-portfolio)
 
 `Unity` `C#` `UGUI` `TextMeshPro` `Input System` `ScriptableObject` `2D`
@@ -19,8 +19,6 @@
 | **RandomDefence — 드래그&드롭** | 슬롯 이동/머지/판매 존 드롭. 드래그 중 캐릭터만 UI 위로 렌더(캔버스 런타임 전환) | ![RandomDefence Drag](Docs/gifs/RandomDefence_Drag.gif) |
 | **TimerMatch** ★ | 목표 시점에 정지 → 오차 판정 · 계단식 점수 · (고난이도) 타이머 숨김 | ![TimerMatch](Docs/gifs/TimerMatch.gif) |
 
-> ★ = 필수 컷. GIF 파일은 위 경로(`Docs/gifs/`)에 동일한 이름으로 넣으면 자동 표시됩니다.
-> 녹화 방법·컷 구성·권장 설정은 [`Docs/gifs/CAPTURE_GUIDE.md`](Docs/gifs/CAPTURE_GUIDE.md) 참고.
 
 ---
 
@@ -134,7 +132,6 @@ MiniGames/ (콘텐츠 ― 게임당 폴더 1개, 네임스페이스/접두사 �
 4. MainSceneController의 게임 목록에 에셋 추가 → 끝
 ```
 
-README에는 위의 게임 포맷(장르/진행/코어 루프 → 핵심 시스템 → 기술 포인트)으로 섹션을 추가합니다.
 
 ---
 
