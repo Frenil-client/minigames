@@ -3,7 +3,7 @@
 > 하나의 베이스 씬 위에서 미니게임을 동적으로 로드/언로드하는 **확장형 미니게임 플랫폼**입니다.
 > 플랫폼(허브)과 콘텐츠(미니게임)를 구조적으로 분리해, 새 게임을 "폴더 하나 + 데이터 에셋 하나"로 추가할 수 있도록 설계했습니다.
 
-**정휘현** · Unity 클라이언트 프로그래머 (6년 8개월) · silsen@naver.com
+**정휘현** · Unity 클라이언트 프로그래머 (6년 9개월) · silsen@naver.com
 📂 시스템/툴 포트폴리오: [frenil-portfolio](https://github.com/Frenil-client/frenil-portfolio)
 
 `Unity` `C#` `UGUI` `TextMeshPro` `Input System` `ScriptableObject` `2D`
@@ -147,6 +147,15 @@ Assets/
 │   └── TimerMatch/     # TM_* (Data / Core / UI)
 └── Scenes/           # MainScene, LoadingScene, 게임별 진입 씬
 ```
+
+---
+
+## 서드파티 에셋
+
+플랫폼 코드와 두 게임의 로직은 직접 구현했고, 아트와 이펙트에는 Asset Store 에셋과 폰트를 사용했습니다.
+패키지 전체는 넣지 않고 게임이 실제로 쓰는 파일만 각 게임의 `Resources/` 아래에 두었습니다.
+출처, 파일 위치, 라이선스 안내는 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)에 정리했습니다.
+이 파일들은 원저작자의 라이선스를 따르므로, 재사용이 필요하면 원본 패키지를 직접 받아 사용해야 합니다.
 
 ---
 
